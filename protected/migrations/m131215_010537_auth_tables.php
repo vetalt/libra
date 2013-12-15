@@ -38,7 +38,7 @@ create table `AuthAssignment`
 ) engine InnoDB;
             ");
         
-        $this->execute("INSERT INTO `AuthItem` (name, type) VALUES ('admin',0),('librarian',0),('visitor',0);");
+        $this->execute("INSERT INTO `AuthItem` (name, type) VALUES ('admin',2),('librarian',2),('visitor',2);");
         
         $this->execute("INSERT INTO `AuthAssignment` (itemname, userid) VALUES ('admin',1);"); // first registered user gets admin role
     }

@@ -89,5 +89,26 @@ class Users extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
+    
+    public function getRole() {
+        $am = Yii::app()->getAuthManager();
+        $aa = $am->getAuthAssignments($this->id);
+        $aa = current($aa);
+        if ($aa) {
+            $role = $aa->itemName;
+        } else {
+            $role = $am->defaultRoles[0];
+        }
+        return $role;
+    }
+    
+    public function getRoles() {
+        $am = Yii::app()->getAuthManager();
+        $ai = $am->getAuthItems(2);
+        foreach ($ai as $k=>$v) {
+            $roles[$k]=$k;
+        }
+        return $roles;
+    }
 
 }

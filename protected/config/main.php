@@ -49,6 +49,7 @@ return array(
         'authManager' => array(
             'class' => 'CDbAuthManager',
             'connectionID' => 'db',
+            'defaultRoles'=>array('visitor'),
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors

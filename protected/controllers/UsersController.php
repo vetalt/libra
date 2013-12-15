@@ -14,6 +14,7 @@ class UsersController extends Controller {
     public function filters() {
         return array(
             'accessControl', // perform access control for CRUD operations
+            'postOnly + delete', // we only allow deletion via POST request
         );
     }
 
@@ -24,17 +25,17 @@ class UsersController extends Controller {
      */
     public function accessRules() {
         return array(
-            array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view'),
-                'users' => array('*'),
-            ),
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update'),
-                'users' => array('@'),
-            ),
+//            array('allow', // allow all users to perform 'index' and 'view' actions
+//                'actions' => array('index', 'view'),
+//                'users' => array('*'),
+//            ),
+//            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+//                'actions' => array('create', 'update'),
+//                'users' => array('@'),
+//            ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions' => array('admin', 'delete'),
-                'users' => array('admin'),
+//                'actions' => array('admin', 'delete'),
+                'roles' => array('admin'),
             ),
             array('deny', // deny all users
                 'users' => array('*'),
@@ -57,15 +58,21 @@ class UsersController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreate() {
-        $model = new Users;
+        $model = new RegisterForm;
 
-// Uncomment the following line if AJAX validation is needed
-// $this->performAjaxValidation($model);
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Users'])) {
-            $model->attributes = $_POST['Users'];
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+        if (isset($_POST['RegisterForm'])) {
+            $model->attributes = $_POST['RegisterForm'];
+            if ($model->validate()) {
+                $model->pass = CPasswordHelper::hashPassword($model->pass);
+                if ($model->save()) {
+                    Yii::app()->getAuthManager()->assign($_POST['RegisterForm']['role'], $model->id);
+                    
+                    $this->redirect(array('view', 'id' => $model->id));
+                }
+            }
         }
 
         $this->render('create', array(
@@ -81,13 +88,18 @@ class UsersController extends Controller {
     public function actionUpdate($id) {
         $model = $this->loadModel($id);
 
-// Uncomment the following line if AJAX validation is needed
-// $this->performAjaxValidation($model);
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
 
         if (isset($_POST['Users'])) {
             $model->attributes = $_POST['Users'];
-            if ($model->save())
+            if ($model->save()) {
+                $am = Yii::app()->getAuthManager();
+                $am->revoke($model->role, $model->id);
+                $am->assign($_POST['Users']['role'], $model->id);
+                
                 $this->redirect(array('view', 'id' => $model->id));
+            }
         }
 
         $this->render('update', array(
@@ -101,16 +113,13 @@ class UsersController extends Controller {
      * @param integer $id the ID of the model to be deleted
      */
     public function actionDelete($id) {
-        if (Yii::app()->request->isPostRequest) {
-// we only allow deletion via POST request
-            $this->loadModel($id)->delete();
+        $model = $this->loadModel($id);
+        Yii::app()->getAuthManager()->revoke($model->role, $model->id);
+        $model->delete();
 
-// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if (!isset($_GET['ajax']))
-                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
-        else
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if (!isset($_GET['ajax']))
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
     }
 
     /**
@@ -140,7 +149,9 @@ class UsersController extends Controller {
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
-     * @param integer the ID of the model to be loaded
+     * @param integer $id the ID of the model to be loaded
+     * @return Users the loaded model
+     * @throws CHttpException
      */
     public function loadModel($id) {
         $model = Users::model()->findByPk($id);
@@ -151,7 +162,7 @@ class UsersController extends Controller {
 
     /**
      * Performs the AJAX validation.
-     * @param CModel the model to be validated
+     * @param Users $model the model to be validated
      */
     protected function performAjaxValidation($model) {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'users-form') {
