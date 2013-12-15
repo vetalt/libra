@@ -2,6 +2,8 @@
 
 class UserIdentity extends CUserIdentity {
 
+    private $_id;
+
     /**
      * @return boolean whether authentication succeeds.
      */
@@ -12,11 +14,15 @@ class UserIdentity extends CUserIdentity {
         else if (!CPasswordHelper::verifyPassword($this->password, $user->pass))
             $this->errorCode = self::ERROR_PASSWORD_INVALID;
         else {
-//            $this->_id = $user->id;
+            $this->_id = $user->id;
             $this->username = $user->login;
             $this->errorCode = self::ERROR_NONE;
         }
         return $this->errorCode == self::ERROR_NONE;
+    }
+
+    public function getId() {
+        return $this->_id;
     }
 
 }
