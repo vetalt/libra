@@ -7,8 +7,8 @@ class m131216_014149_authors_table extends CDbMigration {
             CREATE TABLE `authors` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `name` varchar(255) NOT NULL,
-              `birth` year DEFAULT NULL,
-              `death` year DEFAULT NULL,
+              `birth` smallint DEFAULT NULL,
+              `death` smallint DEFAULT NULL,
               `country` varchar(255) DEFAULT NULL,
               `biography` text,
               PRIMARY KEY (`id`),

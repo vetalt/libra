@@ -1,9 +1,9 @@
 <?php
-/* @var $this AuthorsController */
-/* @var $model Authors */
+/* @var $this BooksController */
+/* @var $model Books */
 
 $this->breadcrumbs = array(
-    'Authors'
+    'Books'
 );
 
 $this->menu = array(
@@ -11,20 +11,17 @@ $this->menu = array(
 );
 ?>
 
-<h1>Authors</h1>
+<h1>Books</h1>
 
 <?php
 $this->widget('zii.widgets.grid.CGridView', array(
-    'id' => 'authors-grid',
+    'id' => 'books-grid',
     'dataProvider' => $model->search(),
     'filter' => $model,
     'columns' => array(
 //        'id',
-        'name',
-        'birth',
-        'death',
-        'country',
-//        'biography',
+        'title',
+        'author.name',
         array(
             'class' => 'CButtonColumn',
         ),

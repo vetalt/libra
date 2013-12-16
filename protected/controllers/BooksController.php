@@ -1,6 +1,6 @@
 <?php
 
-class AuthorsController extends Controller {
+class BooksController extends Controller {
 
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -53,13 +53,13 @@ class AuthorsController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreate() {
-        $model = new Authors;
+        $model = new Books;
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Authors'])) {
-            $model->attributes = $_POST['Authors'];
+        if (isset($_POST['Books'])) {
+            $model->attributes = $_POST['Books'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->id));
         }
@@ -80,8 +80,8 @@ class AuthorsController extends Controller {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Authors'])) {
-            $model->attributes = $_POST['Authors'];
+        if (isset($_POST['Books'])) {
+            $model->attributes = $_POST['Books'];
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->id));
         }
@@ -108,7 +108,7 @@ class AuthorsController extends Controller {
      * Lists all models.
      */
     public function actionIndex() {
-        $dataProvider = new CActiveDataProvider('Authors');
+        $dataProvider = new CActiveDataProvider('Books');
         $this->render('index', array(
             'dataProvider' => $dataProvider,
         ));
@@ -118,10 +118,10 @@ class AuthorsController extends Controller {
      * Manages all models.
      */
     public function actionAdmin() {
-        $model = new Authors('search');
+        $model = new Books('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Authors']))
-            $model->attributes = $_GET['Authors'];
+        if (isset($_GET['Books']))
+            $model->attributes = $_GET['Books'];
 
         $this->render('admin', array(
             'model' => $model,
@@ -132,11 +132,11 @@ class AuthorsController extends Controller {
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
-     * @return Authors the loaded model
+     * @return Books the loaded model
      * @throws CHttpException
      */
     public function loadModel($id) {
-        $model = Authors::model()->findByPk($id);
+        $model = Books::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -144,10 +144,10 @@ class AuthorsController extends Controller {
 
     /**
      * Performs the AJAX validation.
-     * @param Authors $model the model to be validated
+     * @param Books $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'authors-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'books-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

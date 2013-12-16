@@ -1,23 +1,24 @@
 <?php
 
 /**
- * This is the model class for table "authors".
+ * This is the model class for table "books".
  *
- * The followings are the available columns in table 'authors':
+ * The followings are the available columns in table 'books':
  * @property string $id
- * @property string $name
- * @property string $birth
- * @property string $death
- * @property string $country
- * @property string $biography
+ * @property string $title
+ * @property string $author_id
+ *
+ * The followings are the available model relations:
+ * @property BookTexts[] $bookTexts
+ * @property Authors $author
  */
-class Authors extends CActiveRecord {
+class Books extends CActiveRecord {
 
     /**
      * @return string the associated database table name
      */
     public function tableName() {
-        return 'authors';
+        return 'books';
     }
 
     /**
@@ -27,13 +28,12 @@ class Authors extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
-            array('name, country', 'length', 'max' => 255),
-            array('birth, death', 'length', 'max' => 4),
-            array('biography', 'safe'),
+            array('title, author_id', 'required'),
+            array('title', 'length', 'max' => 255),
+            array('author_id', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, birth, death, country, biography', 'safe', 'on' => 'search'),
+            array('id, title, author_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -44,7 +44,8 @@ class Authors extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'books' => array(self::HAS_MANY, 'Books', 'author_id'),
+            'bookTexts' => array(self::HAS_MANY, 'BookTexts', 'book_id'),
+            'author' => array(self::BELONGS_TO, 'Authors', 'author_id'),
         );
     }
 
@@ -54,11 +55,8 @@ class Authors extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'name' => 'Name',
-            'birth' => 'Birth year',
-            'death' => 'Death year',
-            'country' => 'Country',
-            'biography' => 'Biography',
+            'title' => 'Title',
+            'author_id' => 'Author',
         );
     }
 
@@ -80,11 +78,8 @@ class Authors extends CActiveRecord {
         $criteria = new CDbCriteria;
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('name', $this->name, true);
-        $criteria->compare('birth', $this->birth, true);
-        $criteria->compare('death', $this->death, true);
-        $criteria->compare('country', $this->country, true);
-        $criteria->compare('biography', $this->biography, true);
+        $criteria->compare('title', $this->title, true);
+        $criteria->compare('author_id', $this->author_id, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -95,18 +90,10 @@ class Authors extends CActiveRecord {
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return Authors the static model class
+     * @return Books the static model class
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
-    }
-
-    public static function getNames() {
-        $models = self::model()->findAll();
-        foreach ($models as $model) {
-            $names[$model->id] = $model->name;
-        }
-        return $names;
     }
 
 }

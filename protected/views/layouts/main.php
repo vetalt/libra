@@ -34,6 +34,7 @@
 //				array('label'=>'Contact', 'url'=>array('/site/contact')),
                             array('label'=>'Users', 'url'=>array('/users/admin'), 'visible'=>Yii::app()->user->checkAccess('admin')),
                             array('label'=>'Authors', 'url'=>array('/authors/admin')),
+                            array('label'=>'Books', 'url'=>array('/books/admin')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
